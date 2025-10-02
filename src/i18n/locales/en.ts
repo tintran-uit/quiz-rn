@@ -1,0 +1,15 @@
+export default {
+  welcome_title: 'Welcome to Quiz!',
+  welcome_subtitle: 'Challenge your knowledge',
+  enter_your_name: 'Enter your name...',
+  start: 'Start',
+  invalid_name_title: 'Invalid Name',
+  invalid_name_desc: 'Username must be at least 3 characters.',
+  error: 'Error',
+  login_failed: 'Could not log in. Please try again later.',
+  question_progress: 'Question {{current}}/{{total}}',
+  correct: 'Correct!',
+  points: 'points',
+  view_results: 'View Results',
+  next_question: 'Next Question',
+};

@@ -28,6 +28,7 @@
     "@react-native-community/cli": "latest",
     "@react-native/metro-config": "latest",
     "@types/react": "~19.1.0",
+    "expo-module-scripts": "^5.0.7",
     "typescript": "~5.9.2"
   },
   "private": true

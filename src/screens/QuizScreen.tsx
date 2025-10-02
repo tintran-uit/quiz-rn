@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { I18nManager } from 'react-native';
 import {
   View,
   Text,
@@ -15,6 +16,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList, Question, User } from '../types';
 import { questions } from '../data/questions';
 import { colors, spacing, fontSizes, borderRadius, shadow } from '../styles/theme';
+import useTranslation from '../i18n/useTranslation';
 
 type QuizScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Quiz'>;
 
@@ -22,8 +24,14 @@ interface Props {
   navigation: QuizScreenNavigationProp;
 }
 
+const LANGUAGES = [
+  { code: 'en', label: 'English' },
+  { code: 'vi', label: 'Tiếng Việt' },
+];
+
 export const QuizScreen: React.FC<Props> = ({ navigation }) => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const { t, locale, setLocale } = useTranslation();
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [score, setScore] = useState(0);
   const [user, setUser] = useState<User | null>(null);
@@ -163,9 +171,21 @@ export const QuizScreen: React.FC<Props> = ({ navigation }) => {
   return (
     <LinearGradient colors={[colors.background, '#E0E7FF']} style={styles.container}>
       <View style={{ flex: 1 }}>
+        {/* Language Switcher */}
+        <View style={styles.languageSwitcher}>
+          {LANGUAGES.map((lang) => (
+            <TouchableOpacity
+              key={lang.code}
+              style={[styles.langButton, locale === lang.code && styles.langButtonActive]}
+              onPress={() => setLocale(lang.code)}
+            >
+              <Text style={[styles.langButtonText, locale === lang.code && styles.langButtonTextActive]}>{lang.label}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
         <ScrollView style={styles.scrollView} contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps="handled">
           <View style={styles.header}>
-            <Text style={styles.progressText}>{`Câu ${currentQuestionIndex + 1}/${questions.length}`}</Text>
+            <Text style={styles.progressText}>{t('question_progress', { current: currentQuestionIndex + 1, total: questions.length })}</Text>
             <View style={styles.progressBar}>
               <Animated.View style={[styles.progressFill, {
                 width: progressAnim.interpolate({
@@ -212,8 +232,8 @@ export const QuizScreen: React.FC<Props> = ({ navigation }) => {
 
           {showScorePopup && (
             <View style={styles.scorePopup} pointerEvents="none">
-              <Text style={styles.scorePopupTitle}>🎉 Chính xác!</Text>
-              <Text style={styles.scorePopupScore}>+{earnedScore} điểm</Text>
+              <Text style={styles.scorePopupTitle}>🎉 {t('correct')}</Text>
+              <Text style={styles.scorePopupScore}>+{earnedScore} {t('points')}</Text>
             </View>
           )}
         </ScrollView>
@@ -221,7 +241,7 @@ export const QuizScreen: React.FC<Props> = ({ navigation }) => {
           <View style={styles.nextButtonWrapper}>
             <TouchableOpacity style={styles.nextButton} onPress={handleNextQuestion}>
               <Text style={styles.nextButtonText}>
-                {isLastQuestion ? 'Xem kết quả' : 'Câu tiếp theo'}
+                {isLastQuestion ? t('view_results') : t('next_question')}
               </Text>
             </TouchableOpacity>
           </View>
@@ -232,6 +252,34 @@ export const QuizScreen: React.FC<Props> = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
+  languageSwitcher: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    paddingHorizontal: spacing.lg,
+    paddingTop: spacing.sm,
+    gap: 8,
+  },
+  langButton: {
+    paddingVertical: 4,
+    paddingHorizontal: 12,
+    borderRadius: borderRadius.full,
+    backgroundColor: colors.background,
+    borderWidth: 1,
+    borderColor: colors.border,
+    marginLeft: 8,
+  },
+  langButtonActive: {
+    backgroundColor: colors.primary,
+    borderColor: colors.primary,
+  },
+  langButtonText: {
+    color: colors.text,
+    fontWeight: '600',
+  },
+  langButtonTextActive: {
+    color: colors.white,
+  },
   container: {
     flex: 1,
     paddingTop: 60,

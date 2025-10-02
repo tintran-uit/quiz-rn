@@ -1,0 +1,15 @@
+export default {
+  welcome_title: 'Chào mừng đến với Quiz!',
+  welcome_subtitle: 'Thử thách kiến thức của bạn',
+  enter_your_name: 'Nhập tên của bạn...',
+  start: 'Bắt đầu',
+  invalid_name_title: 'Tên không hợp lệ',
+  invalid_name_desc: 'Tên người dùng phải có ít nhất 3 ký tự.',
+  error: 'Lỗi',
+  login_failed: 'Không thể đăng nhập. Vui lòng thử lại sau.',
+  question_progress: 'Câu {{current}}/{{total}}',
+  correct: 'Chính xác!',
+  points: 'điểm',
+  view_results: 'Xem kết quả',
+  next_question: 'Câu tiếp theo',
+};

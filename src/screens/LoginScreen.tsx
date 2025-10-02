@@ -1,5 +1,6 @@
 
 import React, { useState } from 'react';
+import useTranslation from '../i18n/useTranslation';
 import {
   View,
   Text,
@@ -25,10 +26,11 @@ interface Props {
 
 export const LoginScreen: React.FC<Props> = ({ navigation }) => {
   const [username, setUsername] = useState('');
+  const { t, locale, setLocale } = useTranslation();
 
   const handleLogin = async () => {
     if (username.trim().length < 3) {
-      Alert.alert('Tên không hợp lệ', 'Tên người dùng phải có ít nhất 3 ký tự.');
+      Alert.alert(t('invalid_name_title'), t('invalid_name_desc'));
       return;
     }
 
@@ -38,11 +40,10 @@ export const LoginScreen: React.FC<Props> = ({ navigation }) => {
         username: username.trim(),
         score: 0,
       };
-      
       await AsyncStorage.setItem('currentUser', JSON.stringify(user));
       navigation.replace('Home');
     } catch (error) {
-      Alert.alert('Lỗi', 'Không thể đăng nhập. Vui lòng thử lại sau.');
+      Alert.alert(t('error'), t('login_failed'));
     }
   };
 
@@ -58,8 +59,8 @@ export const LoginScreen: React.FC<Props> = ({ navigation }) => {
         <View style={styles.content}>
           <View style={styles.header}>
             <Image source={require('../../assets/icon.png')} style={styles.logo} />
-            <Text style={styles.title}>Chào mừng đến với Quiz!</Text>
-            <Text style={styles.subtitle}>Thử thách kiến thức của bạn</Text>
+            <Text style={styles.title}>{t('welcome_title')}</Text>
+            <Text style={styles.subtitle}>{t('welcome_subtitle')}</Text>
           </View>
 
           <View style={styles.card}>
@@ -67,7 +68,7 @@ export const LoginScreen: React.FC<Props> = ({ navigation }) => {
               style={styles.input}
               value={username}
               onChangeText={setUsername}
-              placeholder="Nhập tên của bạn..."
+              placeholder={t('enter_your_name')}
               placeholderTextColor={colors.textLight}
               autoCapitalize="words"
               autoCorrect={false}
@@ -83,7 +84,7 @@ export const LoginScreen: React.FC<Props> = ({ navigation }) => {
                 end={{ x: 1, y: 1 }}
                 style={[styles.button, shadow.button]}
               >
-                <Text style={styles.buttonText}>Bắt đầu</Text>
+                <Text style={styles.buttonText}>{t('start')}</Text>
               </LinearGradient>
             </TouchableOpacity>
           </View>
