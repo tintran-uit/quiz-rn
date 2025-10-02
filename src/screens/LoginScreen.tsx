@@ -1,6 +1,7 @@
 
 import React, { useState } from 'react';
 import useTranslation from '../i18n/useTranslation';
+import LanguageSwitcher from '../components/LanguageSwitcher';
 import {
   View,
   Text,
@@ -23,6 +24,7 @@ type LoginScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Login'
 interface Props {
   navigation: LoginScreenNavigationProp;
 }
+
 
 export const LoginScreen: React.FC<Props> = ({ navigation }) => {
   const [username, setUsername] = useState('');
@@ -56,6 +58,10 @@ export const LoginScreen: React.FC<Props> = ({ navigation }) => {
         colors={[colors.background, '#E0E7FF']}
         style={styles.container}
       >
+  {/* Language Switcher */}
+        <View style={{ position: 'absolute', top: 60, right: 0, zIndex: 20 }}>
+          <LanguageSwitcher />
+        </View>
         <View style={styles.content}>
           <View style={styles.header}>
             <Image source={require('../../assets/icon.png')} style={styles.logo} />
@@ -112,7 +118,7 @@ const styles = StyleSheet.create({
   logo: {
     width: 100,
     height: 100,
-    marginBottom: spacing.lg,
+    marginBottom: spacing.md,
   },
   title: {
     fontSize: fontSizes.xxl,
@@ -121,7 +127,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   subtitle: {
-    fontSize: fontSizes.lg,
+    fontSize: fontSizes.md,
     color: colors.textLight,
     marginTop: spacing.sm,
     textAlign: 'center',

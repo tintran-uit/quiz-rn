@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import useTranslation from '../i18n/useTranslation';
+import LanguageSwitcher from '../components/LanguageSwitcher';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Image } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
@@ -36,6 +38,7 @@ const topics = [
 export function HomeScreen() {
   const navigation: any = useNavigation();
   const [user, setUser] = useState<User | null>(null);
+  const { t, locale, setLocale } = useTranslation();
 
   useEffect(() => {
     const loadUser = async () => {
@@ -52,43 +55,48 @@ export function HomeScreen() {
       colors={[colors.background, '#E0E7FF']}
       style={styles.container}
     >
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <View style={styles.header}>
-          <Text style={styles.greeting}>Xin chào,</Text>
-          <Text style={styles.username}>{user?.username || 'Guest'}</Text>
-          <TouchableOpacity onPress={() => navigation.navigate('Leaderboard')} style={styles.leaderboardButton}>
-            <Text style={styles.leaderboardText}>🏆 Bảng xếp hạng</Text>
-          </TouchableOpacity>
+      <View style={{ flex: 1 }}>
+        <View style={{ position: 'absolute', top: 0, right: 0, zIndex: 20 }}>
+          <LanguageSwitcher />
         </View>
-
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>Chọn chủ đề</Text>
-          <Text style={styles.cardSubtitle}>Hãy chọn một chủ đề để bắt đầu!</Text>
-          
-          {topics.map((topic) => (
-            <TouchableOpacity
-              key={topic.title}
-              activeOpacity={0.8}
-              onPress={() => navigation.navigate('Quiz', { topic: topic.title })}
-            >
-              <LinearGradient
-                colors={topic.gradient as [string, string]}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                style={styles.topicButton}
-              >
-                <Text style={styles.topicIcon}>{topic.icon}</Text>
-                <View>
-                  <Text style={styles.topicTitle}>{topic.title}</Text>
-                  <Text style={styles.topicDesc}>{topic.desc}</Text>
-                </View>
-              </LinearGradient>
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <View style={styles.header}>
+            <Text style={styles.greeting}>{t('hello')},</Text>
+            <Text style={styles.username}>{user?.username || t('guest')}</Text>
+            <TouchableOpacity onPress={() => navigation.navigate('Leaderboard')} style={styles.leaderboardButton}>
+              <Text style={styles.leaderboardText}>🏆 {t('leaderboard')}</Text>
             </TouchableOpacity>
-          ))}
-        </View>
-      </ScrollView>
+          </View>
+
+          <View style={styles.card}>
+            <Text style={styles.cardTitle}>{t('choose_topic')}</Text>
+            <Text style={styles.cardSubtitle}>{t('choose_topic_subtitle')}</Text>
+            {topics.map((topic) => (
+              <TouchableOpacity
+                key={topic.title}
+                activeOpacity={0.8}
+                onPress={() => navigation.navigate('Quiz', { topic: topic.title })}
+              >
+                <LinearGradient
+                  colors={topic.gradient as [string, string]}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                  style={styles.topicButton}
+                >
+                  <Text style={styles.topicIcon}>{topic.icon}</Text>
+                  <View>
+                    <Text style={styles.topicTitle}>{topic.title}</Text>
+                    <Text style={styles.topicDesc}>{topic.desc}</Text>
+                  </View>
+                </LinearGradient>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </ScrollView>
+      </View>
     </LinearGradient>
   );
+
 }
 
 const styles = StyleSheet.create({

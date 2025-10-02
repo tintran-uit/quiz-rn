@@ -1,4 +1,9 @@
 export default {
+  hello: 'Hello',
+  guest: 'Guest',
+  leaderboard: 'Leaderboard',
+  choose_topic: 'Choose a topic',
+  choose_topic_subtitle: 'Please select a topic to start!',
   welcome_title: 'Welcome to Quiz!',
   welcome_subtitle: 'Challenge your knowledge',
   enter_your_name: 'Enter your name...',

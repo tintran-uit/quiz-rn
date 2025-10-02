@@ -1,4 +1,9 @@
 export default {
+  hello: 'Xin chào',
+  guest: 'Khách',
+  leaderboard: 'Bảng xếp hạng',
+  choose_topic: 'Chọn chủ đề',
+  choose_topic_subtitle: 'Hãy chọn một chủ đề để bắt đầu!',
   welcome_title: 'Chào mừng đến với Quiz!',
   welcome_subtitle: 'Thử thách kiến thức của bạn',
   enter_your_name: 'Nhập tên của bạn...',

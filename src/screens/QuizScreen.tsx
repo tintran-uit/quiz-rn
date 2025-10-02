@@ -24,11 +24,6 @@ interface Props {
   navigation: QuizScreenNavigationProp;
 }
 
-const LANGUAGES = [
-  { code: 'en', label: 'English' },
-  { code: 'vi', label: 'Tiếng Việt' },
-];
-
 export const QuizScreen: React.FC<Props> = ({ navigation }) => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const { t, locale, setLocale } = useTranslation();
@@ -171,18 +166,6 @@ export const QuizScreen: React.FC<Props> = ({ navigation }) => {
   return (
     <LinearGradient colors={[colors.background, '#E0E7FF']} style={styles.container}>
       <View style={{ flex: 1 }}>
-        {/* Language Switcher */}
-        <View style={styles.languageSwitcher}>
-          {LANGUAGES.map((lang) => (
-            <TouchableOpacity
-              key={lang.code}
-              style={[styles.langButton, locale === lang.code && styles.langButtonActive]}
-              onPress={() => setLocale(lang.code)}
-            >
-              <Text style={[styles.langButtonText, locale === lang.code && styles.langButtonTextActive]}>{lang.label}</Text>
-            </TouchableOpacity>
-          ))}
-        </View>
         <ScrollView style={styles.scrollView} contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps="handled">
           <View style={styles.header}>
             <Text style={styles.progressText}>{t('question_progress', { current: currentQuestionIndex + 1, total: questions.length })}</Text>
