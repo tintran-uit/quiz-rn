@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import {
   View,
@@ -8,10 +9,13 @@ import {
   Alert,
   KeyboardAvoidingView,
   Platform,
+  Image,
 } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../types';
+import { colors, spacing, fontSizes, borderRadius, shadow } from '../styles/theme';
 
 type LoginScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
 
@@ -24,12 +28,11 @@ export const LoginScreen: React.FC<Props> = ({ navigation }) => {
 
   const handleLogin = async () => {
     if (username.trim().length < 3) {
-      Alert.alert('Lỗi', 'Tên người dùng phải có ít nhất 3 ký tự');
+      Alert.alert('Tên không hợp lệ', 'Tên người dùng phải có ít nhất 3 ký tự.');
       return;
     }
 
     try {
-      // Lưu thông tin người dùng
       const user = {
         id: Date.now().toString(),
         username: username.trim(),
@@ -37,44 +40,55 @@ export const LoginScreen: React.FC<Props> = ({ navigation }) => {
       };
       
       await AsyncStorage.setItem('currentUser', JSON.stringify(user));
-      
-      // Chuyển đến màn hình quiz
-      navigation.navigate('Quiz');
+      navigation.replace('Home');
     } catch (error) {
-      Alert.alert('Lỗi', 'Không thể đăng nhập. Vui lòng thử lại.');
+      Alert.alert('Lỗi', 'Không thể đăng nhập. Vui lòng thử lại sau.');
     }
   };
 
   return (
-    <KeyboardAvoidingView 
-      style={styles.container}
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
-      <View style={styles.content}>
-        <Text style={styles.title}>Quiz App</Text>
-        <Text style={styles.subtitle}>Chào mừng đến với ứng dụng quiz!</Text>
-        
-        <View style={styles.inputContainer}>
-          <Text style={styles.label}>Tên người dùng</Text>
-          <TextInput
-            style={styles.input}
-            value={username}
-            onChangeText={setUsername}
-            placeholder="Nhập tên của bạn"
-            placeholderTextColor="#999"
-            autoCapitalize="none"
-            autoCorrect={false}
-          />
+      <LinearGradient
+        colors={[colors.background, '#E0E7FF']}
+        style={styles.container}
+      >
+        <View style={styles.content}>
+          <View style={styles.header}>
+            <Image source={require('../../assets/icon.png')} style={styles.logo} />
+            <Text style={styles.title}>Chào mừng đến với Quiz!</Text>
+            <Text style={styles.subtitle}>Thử thách kiến thức của bạn</Text>
+          </View>
+
+          <View style={styles.card}>
+            <TextInput
+              style={styles.input}
+              value={username}
+              onChangeText={setUsername}
+              placeholder="Nhập tên của bạn..."
+              placeholderTextColor={colors.textLight}
+              autoCapitalize="words"
+              autoCorrect={false}
+            />
+            <TouchableOpacity
+              onPress={handleLogin}
+              disabled={!username.trim()}
+              activeOpacity={0.8}
+            >
+              <LinearGradient
+                colors={!username.trim() ? ['#9CA3AF', '#9CA3AF'] : [colors.primaryHover, colors.primary]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={[styles.button, shadow.button]}
+              >
+                <Text style={styles.buttonText}>Bắt đầu</Text>
+              </LinearGradient>
+            </TouchableOpacity>
+          </View>
         </View>
-        
-        <TouchableOpacity 
-          style={[styles.button, !username.trim() && styles.buttonDisabled]}
-          onPress={handleLogin}
-          disabled={!username.trim()}
-        >
-          <Text style={styles.buttonText}>Bắt đầu Quiz</Text>
-        </TouchableOpacity>
-      </View>
+      </LinearGradient>
     </KeyboardAvoidingView>
   );
 };
@@ -82,60 +96,64 @@ export const LoginScreen: React.FC<Props> = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   content: {
-    flex: 1,
-    justifyContent: 'center',
+    width: '90%',
+    maxWidth: 400,
     alignItems: 'center',
-    paddingHorizontal: 30,
+  },
+  header: {
+    alignItems: 'center',
+    marginBottom: spacing.xxl,
+  },
+  logo: {
+    width: 100,
+    height: 100,
+    marginBottom: spacing.lg,
   },
   title: {
-    fontSize: 32,
+    fontSize: fontSizes.xxl,
     fontWeight: 'bold',
-    color: '#2196F3',
-    marginBottom: 10,
+    color: colors.text,
+    textAlign: 'center',
   },
   subtitle: {
-    fontSize: 16,
-    color: '#666',
+    fontSize: fontSizes.lg,
+    color: colors.textLight,
+    marginTop: spacing.sm,
     textAlign: 'center',
-    marginBottom: 40,
   },
-  inputContainer: {
+  card: {
     width: '100%',
-    marginBottom: 30,
-  },
-  label: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#333',
-    marginBottom: 8,
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+    borderRadius: borderRadius.lg,
+    padding: spacing.lg,
+    ...shadow.card,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.2)',
   },
   input: {
-    width: '100%',
+    backgroundColor: colors.white,
     height: 50,
+    paddingHorizontal: spacing.md,
+    borderRadius: borderRadius.md,
+    fontSize: fontSizes.md,
+    color: colors.text,
+    marginBottom: spacing.md,
     borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 8,
-    paddingHorizontal: 15,
-    fontSize: 16,
-    backgroundColor: '#fff',
+    borderColor: colors.border,
   },
   button: {
-    width: '100%',
     height: 50,
-    backgroundColor: '#2196F3',
-    borderRadius: 8,
+    borderRadius: borderRadius.md,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  buttonDisabled: {
-    backgroundColor: '#ccc',
-  },
   buttonText: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: '600',
+    color: colors.white,
+    fontSize: fontSizes.lg,
+    fontWeight: 'bold',
   },
 });

@@ -9,7 +9,10 @@ import {
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StackNavigationProp } from '@react-navigation/stack';
+import { LinearGradient } from 'expo-linear-gradient';
 import { RootStackParamList, User } from '../types';
+import { colors, spacing, fontSizes, borderRadius, shadow } from '../styles/theme';
+import { useFocusEffect } from '@react-navigation/native';
 
 type LeaderboardScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Leaderboard'>;
 
@@ -21,36 +24,26 @@ export const LeaderboardScreen: React.FC<Props> = ({ navigation }) => {
   const [leaderboard, setLeaderboard] = useState<User[]>([]);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
 
-  useEffect(() => {
-    loadLeaderboard();
-    loadCurrentUser();
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      loadData();
+    }, [])
+  );
 
-  const loadLeaderboard = async () => {
+  const loadData = async () => {
     try {
       const leaderboardString = await AsyncStorage.getItem('leaderboard');
-      if (leaderboardString) {
-        const data = JSON.parse(leaderboardString);
-        setLeaderboard(data);
-      }
-    } catch (error) {
-      console.error('Error loading leaderboard:', error);
-    }
-  };
-
-  const loadCurrentUser = async () => {
-    try {
       const userString = await AsyncStorage.getItem('currentUser');
+      
+      if (leaderboardString) {
+        setLeaderboard(JSON.parse(leaderboardString));
+      }
       if (userString) {
         setCurrentUser(JSON.parse(userString));
       }
     } catch (error) {
-      console.error('Error loading current user:', error);
+      console.error('Error loading data:', error);
     }
-  };
-
-  const handlePlayAgain = () => {
-    navigation.navigate('Quiz');
   };
 
   const handleLogout = () => {
@@ -61,6 +54,7 @@ export const LeaderboardScreen: React.FC<Props> = ({ navigation }) => {
         { text: 'Hủy', style: 'cancel' },
         { 
           text: 'Đăng xuất', 
+          style: 'destructive',
           onPress: async () => {
             await AsyncStorage.removeItem('currentUser');
             navigation.navigate('Login');
@@ -71,16 +65,10 @@ export const LeaderboardScreen: React.FC<Props> = ({ navigation }) => {
   };
 
   const getRankDisplay = (index: number) => {
-    switch (index) {
-      case 0:
-        return '🥇';
-      case 1:
-        return '🥈';
-      case 2:
-        return '🥉';
-      default:
-        return `${index + 1}`;
-    }
+    if (index === 0) return '🥇';
+    if (index === 1) return '🥈';
+    if (index === 2) return '🥉';
+    return <Text style={styles.rankNumber}>{index + 1}</Text>;
   };
 
   const renderLeaderboardItem = ({ item, index }: { item: User; index: number }) => {
@@ -91,203 +79,133 @@ export const LeaderboardScreen: React.FC<Props> = ({ navigation }) => {
         <View style={styles.rankContainer}>
           <Text style={styles.rank}>{getRankDisplay(index)}</Text>
         </View>
-        <View style={styles.userInfo}>
-          <Text style={[styles.username, isCurrentUser && styles.currentUserText]}>
-            {item.username}
-          </Text>
-          {isCurrentUser && <Text style={styles.youText}>(Bạn)</Text>}
-        </View>
+        <Text style={[styles.username, isCurrentUser && styles.currentUserText]}>
+          {item.username}
+          {isCurrentUser && ' (Bạn)'}
+        </Text>
         <Text style={[styles.score, isCurrentUser && styles.currentUserText]}>
-          {item.score} điểm
+          {item.score}
         </Text>
       </View>
     );
   };
 
-  const ListHeader = () => (
-    <View style={styles.headerContainer}>
-      <Text style={styles.title}>🏆 Bảng Xếp Hạng</Text>
-      {currentUser && (
-        <View style={styles.currentUserStats}>
-          <Text style={styles.welcomeText}>Xin chào, {currentUser.username}!</Text>
-          <Text style={styles.scoreText}>Điểm cao nhất của bạn: {currentUser.score}</Text>
-        </View>
-      )}
-    </View>
-  );
-
-  const ListEmpty = () => (
-    <View style={styles.emptyContainer}>
-      <Text style={styles.emptyText}>Chưa có người chơi nào</Text>
-      <Text style={styles.emptySubtext}>Hãy là người đầu tiên!</Text>
-    </View>
-  );
-
   return (
-    <View style={styles.container}>
+    <LinearGradient
+      colors={[colors.background, '#E0E7FF']}
+      style={styles.container}
+    >
+      <View style={styles.header}>
+        <Text style={styles.title}>Bảng Xếp Hạng</Text>
+        <TouchableOpacity onPress={handleLogout}>
+          <Text style={styles.logoutText}>Đăng xuất</Text>
+        </TouchableOpacity>
+      </View>
+
       <FlatList
         data={leaderboard}
         keyExtractor={(item) => item.id}
         renderItem={renderLeaderboardItem}
-        ListHeaderComponent={ListHeader}
-        ListEmptyComponent={ListEmpty}
         contentContainerStyle={styles.listContainer}
-        showsVerticalScrollIndicator={false}
+        ListEmptyComponent={() => (
+          <View style={styles.emptyContainer}>
+            <Text style={styles.emptyText}>Chưa có ai trên bảng xếp hạng. Hãy là người đầu tiên!</Text>
+          </View>
+        )}
       />
       
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.playButton} onPress={handlePlayAgain}>
-          <Text style={styles.playButtonText}>🎮 Chơi lại</Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-          <Text style={styles.logoutButtonText}>🚪 Đăng xuất</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
+      <TouchableOpacity style={styles.playButton} onPress={() => navigation.navigate('Home')}>
+        <Text style={styles.playButtonText}>Chơi Ngay</Text>
+      </TouchableOpacity>
+    </LinearGradient>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    paddingTop: 60,
   },
-  listContainer: {
-    flexGrow: 1,
-    paddingBottom: 100,
-  },
-  headerContainer: {
-    padding: 20,
-    backgroundColor: '#fff',
-    marginBottom: 15,
-    elevation: 2,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: spacing.lg,
+    marginBottom: spacing.lg,
   },
   title: {
-    fontSize: 28,
+    fontSize: fontSizes.xxl,
     fontWeight: 'bold',
-    textAlign: 'center',
-    color: '#333',
-    marginBottom: 15,
+    color: colors.text,
   },
-  currentUserStats: {
-    backgroundColor: '#E3F2FD',
-    padding: 15,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  welcomeText: {
-    fontSize: 16,
+  logoutText: {
+    fontSize: fontSizes.md,
+    color: colors.primary,
     fontWeight: '600',
-    color: '#1976D2',
-    marginBottom: 5,
   },
-  scoreText: {
-    fontSize: 14,
-    color: '#666',
+  listContainer: {
+    paddingHorizontal: spacing.lg,
   },
   leaderboardItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#fff',
-    marginHorizontal: 15,
-    marginVertical: 5,
-    padding: 15,
-    borderRadius: 8,
-    elevation: 1,
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
+    backgroundColor: colors.white,
+    borderRadius: borderRadius.md,
+    padding: spacing.md,
+    marginBottom: spacing.md,
+    ...shadow.card,
   },
   currentUserItem: {
-    backgroundColor: '#FFF3E0',
-    borderWidth: 2,
-    borderColor: '#FF9800',
+    backgroundColor: colors.primary,
+    ...shadow.button,
   },
   rankContainer: {
     width: 40,
     alignItems: 'center',
+    marginRight: spacing.md,
   },
   rank: {
-    fontSize: 18,
-    fontWeight: 'bold',
+    fontSize: fontSizes.xl,
   },
-  userInfo: {
-    flex: 1,
-    marginLeft: 15,
+  rankNumber: {
+    fontSize: fontSizes.lg,
+    fontWeight: 'bold',
+    color: colors.textLight,
   },
   username: {
-    fontSize: 16,
+    flex: 1,
+    fontSize: fontSizes.lg,
     fontWeight: '600',
-    color: '#333',
-  },
-  currentUserText: {
-    color: '#E65100',
-  },
-  youText: {
-    fontSize: 12,
-    color: '#FF9800',
-    fontStyle: 'italic',
+    color: colors.text,
   },
   score: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#4CAF50',
+    fontSize: fontSizes.lg,
+    fontWeight: 'bold',
+    color: colors.primary,
+  },
+  currentUserText: {
+    color: colors.white,
   },
   emptyContainer: {
-    flex: 1,
-    justifyContent: 'center',
+    marginTop: 100,
     alignItems: 'center',
-    padding: 40,
   },
   emptyText: {
-    fontSize: 18,
-    color: '#666',
-    marginBottom: 10,
-  },
-  emptySubtext: {
-    fontSize: 14,
-    color: '#999',
-  },
-  buttonContainer: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    flexDirection: 'row',
-    padding: 15,
-    backgroundColor: '#fff',
-    elevation: 8,
-    shadowOffset: { width: 0, height: -2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
+    fontSize: fontSizes.md,
+    color: colors.textLight,
+    textAlign: 'center',
   },
   playButton: {
-    flex: 1,
-    backgroundColor: '#4CAF50',
-    padding: 15,
-    borderRadius: 8,
-    marginRight: 10,
+    backgroundColor: colors.primary,
+    padding: spacing.lg,
+    borderRadius: borderRadius.full,
     alignItems: 'center',
+    margin: spacing.lg,
+    ...shadow.button,
   },
   playButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  logoutButton: {
-    flex: 1,
-    backgroundColor: '#F44336',
-    padding: 15,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  logoutButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '600',
+    color: colors.white,
+    fontSize: fontSizes.lg,
+    fontWeight: 'bold',
   },
 });

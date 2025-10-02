@@ -26,6 +26,8 @@ export interface QuizSession {
 
 export type RootStackParamList = {
   Login: undefined;
+  Home: undefined;
   Quiz: undefined;
   Leaderboard: undefined;
+  Results: { score: number; total: number };
 };

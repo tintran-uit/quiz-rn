@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz App UI - South America Style</title>
+    <!-- Tải Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <style>
+        /* Sử dụng font Inter cho khả năng đọc tốt */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8; /* Nền nhẹ nhàng */
+        }
+        .container-shadow {
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        /* Gradient màu sắc rực rỡ cho thị trường Nam Mỹ */
+        .gradient-sa-1 { background-image: linear-gradient(135deg, #FF6B6B 0%, #FFD700 100%); } /* Đỏ & Vàng */
+        .gradient-sa-2 { background-image: linear-gradient(135deg, #1E3A8A 0%, #3B82F6 100%); } /* Xanh đậm & Xanh dương */
+        .gradient-sa-3 { background-image: linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%); } /* Tím & Hồng */
+        .vibrant-button {
+            transition: all 0.2s ease-in-out;
+        }
+        .vibrant-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+        }
+    </style>
+</head>
+<body class="p-4 sm:p-8 min-h-screen flex items-center justify-center">
+
+    <div id="appContainer" class="w-full max-w-md bg-white rounded-2xl container-shadow overflow-hidden">
+        
+        <!-- MÀN HÌNH 1: TRANG CHỦ & CHỌN CHỦ ĐỀ -->
+        <div id="homeScreen" class="p-6 transition-opacity duration-500">
+            <h1 class="text-4xl font-extrabold text-indigo-800 mb-2">¡Hola! Chào mừng!</h1>
+            <p class="text-gray-500 mb-8">Chọn một chủ đề để bắt đầu thử thách kiến thức của bạn.</p>
+
+            <div class="space-y-4">
+                
+                <!-- Thẻ Chủ đề 1: Bóng Đá (Rất quan trọng ở Nam Mỹ) -->
+                <div class="gradient-sa-1 p-5 rounded-xl shadow-lg cursor-pointer vibrant-button" onclick="showScreen('quizScreen')">
+                    <h2 class="text-white text-xl font-bold">⚽ Huyền Thoại Túc Cầu</h2>
+                    <p class="text-white text-sm opacity-90 mt-1">Kiểm tra kiến thức về các cầu thủ và lịch sử Copa América.</p>
+                </div>
+
+                <!-- Thẻ Chủ đề 2: Lịch Sử & Địa Lý -->
+                <div class="gradient-sa-2 p-5 rounded-xl shadow-lg cursor-pointer vibrant-button" onclick="showScreen('quizScreen')">
+                    <h2 class="text-white text-xl font-bold">🗺️ Khám Phá Lục Địa</h2>
+                    <p class="text-white text-sm opacity-90 mt-1">Thủ đô, di tích cổ và văn hóa Inca/Maya.</p>
+                </div>
+
+                <!-- Thẻ Chủ đề 3: Âm Nhạc & Khiêu Vũ -->
+                <div class="gradient-sa-3 p-5 rounded-xl shadow-lg cursor-pointer vibrant-button" onclick="showScreen('quizScreen')">
+                    <h2 class="text-white text-xl font-bold">🎵 Nhịp Điệu Latin</h2>
+                    <p class="text-white text-sm opacity-90 mt-1">Salsa, Reggaeton, Tango và các ngôi sao nhạc Pop.</p>
+                </div>
+
+                <!-- Thẻ Chủ đề 4: Ẩm Thực Đường Phố -->
+                <div class="bg-yellow-500 p-5 rounded-xl shadow-lg cursor-pointer vibrant-button" onclick="showScreen('quizScreen')">
+                    <h2 class="text-gray-800 text-xl font-bold">🌶️ Hương Vị Fiesta</h2>
+                    <p class="text-gray-800 text-sm opacity-90 mt-1">Từ Arepas đến Feijoada, bạn biết bao nhiêu?</p>
+                </div>
+            </div>
+
+            <button class="w-full mt-6 py-3 text-center text-indigo-800 font-semibold bg-gray-200 rounded-full hover:bg-gray-300 transition" onclick="showScreen('quizScreen')">
+                Thử Thách Nhanh Ngẫu Nhiên
+            </button>
+        </div>
+
+        <!-- MÀN HÌNH 2: GIAO DIỆN CHƠI QUIZ -->
+        <div id="quizScreen" class="p-6 hidden transition-opacity duration-500">
+            
+            <!-- Thanh Tiến Trình & Đồng Hồ -->
+            <div class="flex justify-between items-center mb-6">
+                <span class="text-sm font-medium text-indigo-700">Câu hỏi 3/10</span>
+                <div class="w-3/5 bg-gray-200 rounded-full h-2.5">
+                    <div class="bg-red-500 h-2.5 rounded-full" style="width: 30%"></div>
+                </div>
+                <span class="text-lg font-extrabold text-red-600">30s</span> <!-- Đồng hồ đếm ngược nổi bật -->
+            </div>
+
+            <!-- Câu Hỏi -->
+            <div class="bg-indigo-700 p-5 rounded-xl mb-8 shadow-xl">
+                <p class="text-white text-xl font-medium leading-relaxed">
+                    Đất nước nào ở Nam Mỹ nổi tiếng nhất với vũ điệu Samba và lễ hội Carnival?
+                </p>
+            </div>
+
+            <!-- Các Lựa Chọn Trả Lời (Tappable, Kích thước lớn) -->
+            <div class="space-y-3">
+                
+                <!-- Nút Lựa Chọn 1 -->
+                <button class="w-full text-left py-4 px-5 bg-amber-400 text-gray-800 font-bold rounded-xl shadow-md hover:bg-amber-500 vibrant-button" onclick="handleAnswer('correct')">
+                    A) Brazil
+                </button>
+
+                <!-- Nút Lựa Chọn 2 -->
+                <button class="w-full text-left py-4 px-5 bg-white text-gray-700 font-bold rounded-xl shadow-md border-2 border-gray-200 hover:bg-gray-100 vibrant-button" onclick="handleAnswer('incorrect')">
+                    B) Argentina
+                </button>
+
+                <!-- Nút Lựa Chọn 3 -->
+                <button class="w-full text-left py-4 px-5 bg-white text-gray-700 font-bold rounded-xl shadow-md border-2 border-gray-200 hover:bg-gray-100 vibrant-button" onclick="handleAnswer('incorrect')">
+                    C) Chile
+                </button>
+
+                <!-- Nút Lựa Chọn 4 -->
+                <button class="w-full text-left py-4 px-5 bg-white text-gray-700 font-bold rounded-xl shadow-md border-2 border-gray-200 hover:bg-gray-100 vibrant-button" onclick="handleAnswer('incorrect')">
+                    D) Peru
+                </button>
+            </div>
+            
+            <!-- Nút Next/Submit (Thay đổi trạng thái tùy thuộc vào việc đã trả lời hay chưa) -->
+            <button class="w-full mt-6 py-4 bg-indigo-500 text-white font-extrabold rounded-full shadow-lg hover:bg-indigo-600 vibrant-button" onclick="showScreen('resultsScreen')">
+                Tiếp tục (Bỏ qua)
+            </button>
+        </div>
+
+        <!-- MÀN HÌNH 3: KẾT QUẢ & CHIA SẺ (Focus on Social) -->
+        <div id="resultsScreen" class="p-6 hidden text-center transition-opacity duration-500">
+            <h2 class="text-4xl font-extrabold text-pink-600 mb-2">🎉 ¡Increíble!</h2>
+            <p class="text-xl text-gray-600 mb-6">Bạn đã hoàn thành thử thách!</p>
+
+            <!-- Khối Điểm Số Lớn -->
+            <div class="w-48 h-48 mx-auto bg-amber-400 rounded-full flex flex-col items-center justify-center shadow-2xl mb-8">
+                <span class="text-5xl font-extrabold text-gray-800 leading-none">8/10</span>
+                <span class="text-lg text-gray-700 font-semibold mt-1">Điểm Số Tuyệt Vời!</span>
+            </div>
+
+            <!-- Lời Khen ngợi -->
+            <p class="text-lg text-indigo-700 font-medium mb-8">
+                Bạn thật sự am hiểu về văn hóa Latin! Hãy chia sẻ thành tích này!
+            </p>
+
+            <!-- Nút Chia Sẻ Xã Hội (MANDATORY cho thị trường SA) -->
+            <button class="w-full py-4 mb-3 bg-red-500 text-white font-extrabold rounded-full shadow-lg hover:bg-red-600 flex items-center justify-center vibrant-button">
+                <!-- Icon Twitter/X -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" class="mr-2">
+                    <path d="M22.5 0h-21c-.83 0-1.5.67-1.5 1.5v21c0 .83.67 1.5 1.5 1.5h21c.83 0 1.5-.67 1.5-1.5v-21c0-.83-.67-1.5-1.5-1.5zm-5.6 7.4c-.4.2-1.2.5-2.2.5-.9 0-1.4-.4-1.7-.8-.4-.4-.5-.9-.5-1.5s.1-1.3.5-1.7c.4-.4.8-.5 1.7-.5 1.1 0 1.8.3 2.2.5l.3-.4c-.4-.3-.9-.6-1.5-.8s-1.4-.3-2.3-.3c-2 0-3.5.7-4.6 2s-1.6 3.4-1.6 5.8 1.1 4.3 2.5 5.5 3.3 1.8 5.6 1.8c2.4 0 4.1-.7 5.1-2.1l-.8-.6c-.5.4-1.3.7-2.2.7-.9 0-1.5-.3-1.8-.9-.4-.5-.6-1.3-.6-2.5 0-1.1.2-2 .5-2.4.4-.5 1-.7 1.7-.7.5 0 .9.1 1.2.3.4.2.7.5.9.8.3.4.4.7.4 1.1 0 .2 0 .4-.1.6h-2.1v.7h3.1c.1-.2.1-.4.1-.7 0-1.1-.3-1.9-.9-2.4z"/>
+                </svg>
+                Chia Sẻ Điểm Số Lên Mạng Xã Hội!
+            </button>
+
+            <button class="w-full py-4 bg-white border-2 border-indigo-500 text-indigo-700 font-bold rounded-full hover:bg-indigo-50 transition vibrant-button" onclick="showScreen('homeScreen')">
+                Chơi Chủ Đề Khác
+            </button>
+        </div>
+
+    </div>
+
+    <script>
+        // Chức năng chuyển đổi màn hình đơn giản
+        function showScreen(screenId) {
+            const screens = ['homeScreen', 'quizScreen', 'resultsScreen'];
+            screens.forEach(id => {
+                const screen = document.getElementById(id);
+                if (id === screenId) {
+                    screen.classList.remove('hidden');
+                    screen.classList.add('opacity-100');
+                } else {
+                    screen.classList.add('hidden');
+                    screen.classList.remove('opacity-100');
+                }
+            });
+        }
+
+        // Mô phỏng phản hồi khi trả lời
+        function handleAnswer(status) {
+            // Trong ứng dụng thực tế, bạn sẽ gửi câu trả lời lên server và cập nhật UI.
+            if (status === 'correct') {
+                console.log('Chính xác! Chuyển sang câu tiếp theo.');
+                // Ví dụ: làm nổi bật nút màu xanh lá cây
+            } else {
+                console.log('Sai rồi! Chuyển sang câu tiếp theo.');
+                // Ví dụ: làm nổi bật nút màu đỏ và nút đáp án đúng màu xanh lá cây
+            }
+        }
+        
+        // Mặc định hiển thị màn hình chính khi tải
+        showScreen('homeScreen');
+    </script>
+</body>
+</html>

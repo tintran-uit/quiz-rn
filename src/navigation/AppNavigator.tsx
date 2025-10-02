@@ -2,50 +2,44 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { RootStackParamList } from '../types';
+
 import { LoginScreen } from '../screens/LoginScreen';
 import { QuizScreen } from '../screens/QuizScreen';
+import { HomeScreen } from '../screens/HomeScreen';
+
 import { LeaderboardScreen } from '../screens/LeaderboardScreen';
+import ResultsScreen from '../screens/ResultsScreen';
 
 const Stack = createStackNavigator<RootStackParamList>();
 
 export const AppNavigator: React.FC = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator 
+      <Stack.Navigator
         initialRouteName="Login"
         screenOptions={{
-          headerStyle: {
-            backgroundColor: '#2196F3',
-          },
-          headerTintColor: '#fff',
-          headerTitleStyle: {
-            fontWeight: 'bold',
-          },
+          headerShown: false,
         }}
       >
-        <Stack.Screen 
-          name="Login" 
-          component={LoginScreen} 
-          options={{ 
-            title: 'Đăng nhập',
-            headerShown: false 
-          }} 
+        <Stack.Screen
+          name="Login"
+          component={LoginScreen}
         />
-        <Stack.Screen 
-          name="Quiz" 
-          component={QuizScreen} 
-          options={{ 
-            title: 'Quiz',
-            headerLeft: () => null, // Không cho phép quay lại
-          }} 
+        <Stack.Screen
+          name="Home"
+          component={HomeScreen}
         />
-        <Stack.Screen 
-          name="Leaderboard" 
-          component={LeaderboardScreen} 
-          options={{ 
-            title: 'Bảng xếp hạng',
-            headerLeft: () => null, // Không cho phép quay lại
-          }} 
+        <Stack.Screen
+          name="Quiz"
+          component={QuizScreen}
+        />
+        <Stack.Screen
+          name="Leaderboard"
+          component={LeaderboardScreen}
+        />
+        <Stack.Screen
+          name="Results"
+          component={ResultsScreen}
         />
       </Stack.Navigator>
     </NavigationContainer>
